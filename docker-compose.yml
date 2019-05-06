@@ -1,0 +1,40 @@
+version: "3"
+services:
+  web:
+    build: .
+    ports:
+    - "80:8000"
+    volumes:
+    - .:/usr/src/app/
+    networks:
+    - apptest
+    environment:
+      NODE_ENV: production
+      MONGO_URL: mongodb://db:27017/public
+  db:
+    image: mongo:latest
+    ports:
+    - "27017:27017"
+    volumes:
+    - dbvolume:/data/db
+    networks:
+    - apptest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: welcomecome
+  mongo-admins:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+    - apptest
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: welcomecome
+      ME_CONFIG_MONGODB_PORT : 27017
+      ME_CONFIG_MONGODB_SERVER : db
+volumes:
+  dbvolume: {}
+networks:
+  apptest: {}
